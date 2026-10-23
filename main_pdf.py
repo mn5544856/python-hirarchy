@@ -37,13 +37,14 @@ def build_tree(cls, max_depth=3, depth=0, visited=None):
 
     cls_id = id(cls)
     t = classify_class(cls)
-    info = TYPE_INFO.get(t, TYPE_INFO['concrete'])
-    
+    info = TYPE_INFO.get(t, TYPE_INFO["concrete"])
+
     node = {
-        'name': cls.__name__,
-        'type': t,
-        'info': info,
-        'children': [],
+        "name": cls.__name__,
+        "module": getattr(cls, "__module__", "unknown"),
+        "type": t,
+        "info": info,
+        "children": [],
     }
 
     if cls_id in visited or depth >= max_depth:
@@ -51,74 +52,135 @@ def build_tree(cls, max_depth=3, depth=0, visited=None):
             hidden = len(cls.__subclasses__())
         except TypeError:
             hidden = 0
+
         if hidden:
-            node['hidden'] = hidden
+            node["hidden"] = hidden
+
         return node
 
     visited.add(cls_id)
+
     try:
         subs = cls.__subclasses__()
     except TypeError:
         subs = []
 
     for sub in subs:
-        node['children'].append(build_tree(sub, max_depth, depth + 1, visited))
+        node["children"].append(
+            build_tree(sub, max_depth, depth + 1, visited)
+        )
 
     return node
-
-
 # ============================================================
 # 3️⃣ MODULE PDF GENERATOR
 # ============================================================
 
+
 def make_module_pdf(tree, title, filename):
     """Ek module ka PDF chart"""
-    dot = Digraph(format='pdf', name=title)
-    dot.attr(rankdir='TB', bgcolor='#ffffff', fontname='Segoe UI',
-             fontsize='24', labelloc='t', label=title,
-             size='20,30', ratio='compress')
-    
-    dot.attr('node', shape='box', style='rounded,filled',
-             fontname='Segoe UI', fontsize='14', penwidth='2')
-    
-    dot.attr('edge', color='#607d8b', penwidth='1.5', arrowsize='0.8')
+    dot = Digraph(format="pdf", name=title)
 
-    node_counter = {'id': 0}
-    cluster_counter = {'id': 0}
+    dot.attr(
+        rankdir="TB",
+        bgcolor="#ffffff",
+        fontname="Segoe UI",
+        fontsize="26",
+        labelloc="t",
+        label=title,
+        size="20,30",
+        ratio="compress",
+        pad="0.3",
+        nodesep="0.35",
+        ranksep="0.55",
+    )
+
+    dot.attr(
+        "node",
+        shape="box",
+        style="rounded,filled",
+        fontname="Segoe UI",
+        fontsize="16",
+        penwidth="2",
+        margin="0.18,0.12",
+    )
+
+    dot.attr(
+        "edge",
+        color="#607d8b",
+        penwidth="1.5",
+        arrowsize="0.8",
+    )
+
+    node_counter = {"id": 0}
+
+    def escape_html(value):
+        return (
+            str(value)
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+        )
 
     def make_label(node):
-        info = node['info']
-        icon = TYPE_ICONS.get(node['type'], '⚙️')
-        name = node['name'].replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;')
-        
-        label = f"<B><FONT COLOR='{info['text']}'>{icon} {name}</FONT></B>"
-        label += f"<BR/><FONT POINT-SIZE='11' COLOR='#37474f'>{info['name']}</FONT>"
-        
-        if node.get('hidden'):
-            label += f"<BR/><FONT POINT-SIZE='10' COLOR='#455a64'>➕{node['hidden']} more</FONT>"
-            
-        return '<' + label + '>'
+        info = node["info"]
+        icon = TYPE_ICONS.get(node["type"], "⚙️")
+
+        name = escape_html(node["name"])
+        module = escape_html(node.get("module", "unknown"))
+        type_name = escape_html(info["name"])
+
+        label = (
+            f"<B><FONT COLOR='{info['text']}'>"
+            f"{icon} {name}"
+            f"</FONT></B>"
+        )
+
+        label += (
+            f"<BR/><FONT POINT-SIZE='12' COLOR='#37474f'>"
+            f"{type_name}</FONT>"
+        )
+
+        label += (
+            f"<BR/><FONT POINT-SIZE='11' COLOR='#1565c0'>"
+            f"Module: {module}</FONT>"
+        )
+
+        if node.get("hidden"):
+            label += (
+                f"<BR/><FONT POINT-SIZE='10' COLOR='#455a64'>"
+                f"+{node['hidden']} more subclasses</FONT>"
+            )
+
+        return "<" + label + ">"
 
     def add_node(graph, node, parent_id=None):
         nid = f"n{node_counter['id']}"
-        node_counter['id'] += 1
-        info = node['info']
-        
-        graph.node(nid, label=make_label(node),
-                   fillcolor=info['color'], color=info['border'],
-                   fontcolor=info['text'])
-                   
-        if parent_id:
+        node_counter["id"] += 1
+
+        info = node["info"]
+
+        graph.node(
+            nid,
+            label=make_label(node),
+            fillcolor=info["color"],
+            color=info["border"],
+            fontcolor=info["text"],
+        )
+
+        if parent_id is not None:
             graph.edge(parent_id, nid)
-            
-        for child in node['children']:
+
+        for child in node["children"]:
             add_node(graph, child, nid)
 
     add_node(dot, tree)
-    
+
     try:
         dot.render(filename, cleanup=True)
+        print(f"   ✅ PDF generated: {filename}.pdf")
         return True
+
     except Exception as e:
         print(f"   ⚠️ PDF fail: {e}")
         return False
