@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>struct — Struct</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif;
+         background:#f5f7fa; margin:0; padding:20px; }
+  h1 { color:#1a237e; text-align:center; font-size:26px; margin:10px 0; }
+  .back { text-align:center; margin:10px 0 20px; }
+  .back a { display:inline-block; background:#3949ab; color:white;
+            padding:8px 18px; border-radius:20px; text-decoration:none;
+            font-size:14px; font-weight:600; }
+  .back a:hover { background:#283593; }
+  .legend { display:flex; flex-wrap:wrap; gap:12px; justify-content:center;
+            background:white; padding:14px 20px; border-radius:12px;
+            margin:0 auto 20px; max-width:1100px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.08); font-size:13px; }
+  .toolbar { text-align:center; margin:15px 0; position:sticky;
+             top:0; background:rgba(245,247,250,0.95);
+             padding:12px; border-radius:10px; z-index:100;
+             backdrop-filter:blur(6px); }
+  .toolbar button { background:#3949ab; color:white; border:none;
+      padding:9px 18px; border-radius:20px; cursor:pointer;
+      margin:4px; font-size:14px; font-weight:600; }
+  .toolbar button:hover { background:#283593; }
+  .toolbar input { padding:9px 16px; border:2px solid #c5cae9;
+      border-radius:20px; font-size:14px; width:260px; outline:none; }
+  .toolbar input:focus { border-color:#3949ab; }
+  .tree { max-width:1400px; margin:0 auto; padding:25px;
+          background:white; border-radius:12px;
+          box-shadow:0 2px 10px rgba(0,0,0,0.08);
+          overflow-x:auto; }
+  .tree ul { list-style:none; padding-left:28px; margin:0; }
+  .tree > ul { padding-left:0; }
+  .tree li { margin:5px 0; }
+  .node-row { display:flex; align-items:center; gap:6px; padding:3px 0; }
+  .toggle { width:24px; height:24px; border:none; background:#e8eaf6;
+            color:#3949ab; border-radius:50%; cursor:pointer;
+            font-size:12px; font-weight:bold; display:flex;
+            align-items:center; justify-content:center;
+            transition:all 0.15s; flex-shrink:0; }
+  .toggle:hover { background:#3949ab; color:white; }
+  .toggle.open { background:#3949ab; color:white; }
+  .toggle-placeholder { width:24px; height:24px; flex-shrink:0; }
+  .node { display:inline-flex; align-items:center; gap:8px;
+          padding:8px 16px; border-radius:18px; color:white;
+          font-size:14px; font-weight:600; flex-wrap:wrap;
+          border:2px solid; box-shadow:0 2px 5px rgba(0,0,0,0.15); }
+  .node .sym { font-size:16px; }
+  .type-tag { display:inline-block; padding:1px 8px; border-radius:8px;
+              font-size:11px; font-weight:700; color:white;
+              text-transform:uppercase; letter-spacing:0.3px; }
+  .mod-tag { display:inline-block; padding:1px 7px; border-radius:8px;
+             font-size:11px; font-weight:600;
+             background:rgba(255,255,255,0.4); color:#263238; }
+  .parent-tag { display:inline-block; padding:1px 7px; border-radius:8px;
+                font-size:11px; font-weight:600;
+                background:rgba(0,0,0,0.15); color:#263238; }
+  .hidden-tag { display:inline-block; padding:1px 7px; border-radius:8px;
+                font-size:11px; font-weight:700;
+                background:rgba(0,0,0,0.2); color:#263238; }
+  .children.collapsed { display:none; }
+  .node.highlight { outline:3px solid #ffd54f; outline-offset:2px; }
+  @media (max-width:600px) {
+    .node { font-size:12px; padding:6px 10px; }
+    .tree ul { padding-left:16px; }
+  }
+  @media print {
+    .toolbar { display:none; }
+    body { background:white; padding:0; }
+    .tree { box-shadow:none; }
+    .children.collapsed { display:block !important; }
+  }
+</style></head><body>
+<h1>🌳 struct — Struct</h1>
+<div class="back"><a href="index.html">← Back to All Modules</a></div>
+<div class="legend"><span style="color:#b71c1c"><b>🔷 Abstract</b> — Cannot instantiate</span><span style="color:#1b5e20"><b>⚙️ Concrete</b> — Normal class</span><span style="color:#4a148c"><b>🎭 Decorator</b> — Function wrapper</span><span style="color:#004d40"><b>🔌 Protocol</b> — Structural typing</span><span style="color:#bf360c"><b>⚠️ Exception</b> — Error class</span><span style="color:#e65100"><b>🔧 Metaclass</b> — Class of classes</span></div>
+<div class="toolbar">
+  <input type="text" id="search" placeholder="🔍 Search…" oninput="searchTree()">
+  <button onclick="expandAll()">➕ Expand All</button>
+  <button onclick="collapseAll()">➖ Collapse All</button>
+  <button onclick="window.print()">🖨️ Save PDF</button>
+</div>
+<div class="tree"><ul><li class="tree-node"><div class="node-row"><span class="toggle-placeholder"></span><span class="node" style="background:#c8e6c9; border-color:#81c784;"><span class="sym">⚙️⚙️</span> <b style="color:#1b5e20">Struct</b><span class="type-tag" style="background:#81c784;">Concrete</span><span class="mod-tag">📦 _struct</span></span></div></li></ul></div>
+<script>
+function toggleNode(id, btn) {
+  const ul = document.getElementById(id);
+  if (!ul) return;
+  ul.classList.toggle('collapsed');
+  const isOpen = !ul.classList.contains('collapsed');
+  btn.textContent = isOpen ? '▼' : '▶';
+  btn.classList.toggle('open', isOpen);
+}
+function expandAll() {
+  document.querySelectorAll('.children').forEach(u => {
+    u.classList.remove('collapsed');
+    const btn = u.parentElement.querySelector('.toggle');
+    if (btn) { btn.textContent = '▼'; btn.classList.add('open'); }
+  });
+}
+function collapseAll() {
+  document.querySelectorAll('.children').forEach(u => {
+    u.classList.add('collapsed');
+    const btn = u.parentElement.querySelector('.toggle');
+    if (btn) { btn.textContent = '▶'; btn.classList.remove('open'); }
+  });
+}
+function searchTree() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('.node').forEach(n => n.classList.remove('highlight'));
+  if (!q) return;
+  let firstMatch = null;
+  document.querySelectorAll('.node').forEach(n => {
+    if (n.textContent.toLowerCase().includes(q)) {
+      n.classList.add('highlight');
+      if (!firstMatch) firstMatch = n;
+      let parent = n.closest('.children');
+      while (parent) {
+        parent.classList.remove('collapsed');
+        const btn = parent.parentElement.querySelector('.toggle');
+        if (btn) { btn.textContent = '▼'; btn.classList.add('open'); }
+        parent = parent.parentElement.closest('.children');
+      }
+    }
+  });
+  if (firstMatch) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const rootUl = document.querySelector('.tree > ul');
+  if (rootUl) {
+    rootUl.querySelectorAll(':scope > li > .children').forEach(u => {
+      u.classList.remove('collapsed');
+      const btn = u.parentElement.querySelector('.toggle');
+      if (btn) { btn.textContent = '▼'; btn.classList.add('open'); }
+    });
+  }
+});
+</script>
+</body></html>

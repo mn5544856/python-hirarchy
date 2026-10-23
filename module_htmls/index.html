@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Modules — Dashboard</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif;
+         background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 100%);
+         margin:0; padding:20px; min-height:100vh; }
+  h1 { color:#1a237e; text-align:center; font-size:30px; margin:10px 0; }
+  .subtitle { text-align:center; color:#666; margin-bottom:30px; font-size:15px; }
+  
+  .big-stats { display:flex; justify-content:center; gap:20px;
+               flex-wrap:wrap; margin-bottom:30px; }
+  .big-card { background:white; padding:24px 36px; border-radius:16px;
+              box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;
+              min-width:180px; }
+  .big-num { font-size:42px; font-weight:bold; color:#3949ab; }
+  .big-label { color:#666; font-size:14px; margin-top:5px; }
+  
+  .type-grid { display:grid;
+                grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+                gap:14px; max-width:1200px; margin:0 auto 30px; }
+  .stat-card { background:white; padding:16px; border-radius:12px;
+               box-shadow:0 2px 10px rgba(0,0,0,0.08);
+               border-left:5px solid; text-align:center; }
+  .stat-icon { font-size:28px; margin-bottom:5px; }
+  .stat-num { font-size:24px; font-weight:bold; }
+  .stat-label { color:#555; font-size:13px; margin-top:3px; }
+  .stat-pct { color:#999; font-size:11px; }
+  
+  .toolbar { text-align:center; margin:20px 0 30px;
+             position:sticky; top:0; z-index:100;
+             background:rgba(245,247,250,0.95);
+             padding:12px; border-radius:10px;
+             backdrop-filter:blur(8px); }
+  .toolbar input { padding:11px 20px; border:2px solid #c5cae9;
+      border-radius:26px; font-size:15px; width:340px; outline:none;
+      transition:all 0.2s; }
+  .toolbar input:focus { border-color:#3949ab;
+      box-shadow:0 0 0 4px rgba(57,73,171,0.1); }
+  .toolbar .filter-btn { padding:8px 16px; margin:4px; border:none;
+      border-radius:20px; cursor:pointer; background:#e8eaf6;
+      color:#1a237e; font-weight:600; font-size:12px; }
+  .toolbar .filter-btn.active { background:#3949ab; color:white; }
+  
+  .grid { display:grid;
+           grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+           gap:18px; max-width:1600px; margin:0 auto; }
+  
+  .card { background:white; border-radius:14px; overflow:hidden;
+          box-shadow:0 3px 12px rgba(0,0,0,0.08);
+          text-decoration:none; color:inherit;
+          transition:transform 0.15s, box-shadow 0.15s; display:block; }
+  .card:hover { transform:translateY(-4px);
+                box-shadow:0 8px 25px rgba(0,0,0,0.15); }
+  .card-header { padding:14px 18px; display:flex; align-items:center; gap:10px;
+                 color:white; }
+  .card-icon { font-size:20px; }
+  .card-name { font-size:16px; font-weight:bold; }
+  .card-body { padding:14px 18px; }
+  .card-root { color:#1a237e; font-weight:600; font-size:14px;
+               margin-bottom:5px; }
+  .card-count { color:#777; font-size:12px; margin-bottom:10px; }
+  .card-types { display:flex; flex-wrap:wrap; gap:4px; }
+  .type-chip { display:inline-block; padding:2px 8px; border-radius:8px;
+               color:white; font-size:10px; font-weight:700; }
+  
+  .footer { text-align:center; color:#999; margin-top:40px;
+            font-size:13px; }
+</style></head><body>
+<h1>🐍 Python Modules Dashboard</h1>
+<p class="subtitle">137 modules • 1731 classes • Interactive HTML Charts</p>
+
+<div class="big-stats">
+  <div class="big-card">
+    <div class="big-num">137</div>
+    <div class="big-label">Total Modules</div>
+  </div>
+  <div class="big-card">
+    <div class="big-num">1731</div>
+    <div class="big-label">Total Classes</div>
+  </div>
+  <div class="big-card">
+    <div class="big-num">6</div>
+    <div class="big-label">Class Types</div>
+  </div>
+</div>
+
+<div class="type-grid">
+
+            <div class="stat-card" style="border-left-color:#e57373;">
+              <div class="stat-icon">📐</div>
+              <div class="stat-num" style="color:#b71c1c">38</div>
+              <div class="stat-label">Abstract</div>
+              <div class="stat-pct">(2.2%)</div>
+            </div>
+            
+            <div class="stat-card" style="border-left-color:#81c784;">
+              <div class="stat-icon">⚙️⚙️</div>
+              <div class="stat-num" style="color:#1b5e20">1254</div>
+              <div class="stat-label">Concrete</div>
+              <div class="stat-pct">(72.4%)</div>
+            </div>
+            
+            <div class="stat-card" style="border-left-color:#ba68c8;">
+              <div class="stat-icon">🎭</div>
+              <div class="stat-num" style="color:#4a148c">16</div>
+              <div class="stat-label">Decorator</div>
+              <div class="stat-pct">(0.9%)</div>
+            </div>
+            
+            <div class="stat-card" style="border-left-color:#4db6ac;">
+              <div class="stat-icon">🔗</div>
+              <div class="stat-num" style="color:#004d40">19</div>
+              <div class="stat-label">Protocol</div>
+              <div class="stat-pct">(1.1%)</div>
+            </div>
+            
+            <div class="stat-card" style="border-left-color:#ff8a65;">
+              <div class="stat-icon">🚨</div>
+              <div class="stat-num" style="color:#bf360c">403</div>
+              <div class="stat-label">Exception</div>
+              <div class="stat-pct">(23.3%)</div>
+            </div>
+            
+            <div class="stat-card" style="border-left-color:#ffb74d;">
+              <div class="stat-icon">🔧</div>
+              <div class="stat-num" style="color:#e65100">1</div>
+              <div class="stat-label">Metaclass</div>
+              <div class="stat-pct">(0.1%)</div>
+            </div>
+            
+</div>
+
+<div class="toolbar">
+  <input type="text" id="search" placeholder="🔍 Module ya class search karein…"
+         oninput="filterCards()">
+  <br>
+  <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" data-filter="abstract" onclick="setFilter('abstract',this)">🔷 Abstract</button>
+  <button class="filter-btn" data-filter="protocol" onclick="setFilter('protocol',this)">🔌 Protocol</button>
+  <button class="filter-btn" data-filter="decorator" onclick="setFilter('decorator',this)">🎭 Decorator</button>
+  <button class="filter-btn" data-filter="concrete" onclick="setFilter('concrete',this)">🟢 Concrete</button>
+</div>
+
+<div class="grid" id="grid">
+
+        <a href="abc.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">abc</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ABC</div>
+            <div class="card-count">17 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:12</span><span class="type-chip" style="background:#e57373;">Abs:3</span><span class="type-chip" style="background:#ba68c8;">Dec:2</span></div>
+          </div>
+        </a>
+        
+        <a href="argparse.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">argparse</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Action</div>
+            <div class="card-count">14 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:14</span></div>
+          </div>
+        </a>
+        
+        <a href="array.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">array</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">array</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="ast.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">ast</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">stmt</div>
+            <div class="card-count">29 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:29</span></div>
+          </div>
+        </a>
+        
+        <a href="asyncio.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">asyncio</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">BaseProtocol</div>
+            <div class="card-count">15 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:15</span></div>
+          </div>
+        </a>
+        
+        <a href="bdb.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">bdb</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Bdb</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="binascii.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">binascii</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Error</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="builtins.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">builtins</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">object</div>
+            <div class="card-count">944 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:842</span><span class="type-chip" style="background:#ffb74d;">Met:1</span><span class="type-chip" style="background:#4db6ac;">Pro:9</span><span class="type-chip" style="background:#ff8a65;">Exc:53</span><span class="type-chip" style="background:#e57373;">Abs:26</span><span class="type-chip" style="background:#ba68c8;">Dec:13</span></div>
+          </div>
+        </a>
+        
+        <a href="bz2.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">bz2</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">BZ2Compressor</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="cProfile.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">cProfile</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Profile</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="calendar.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">calendar</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">IntEnum</div>
+            <div class="card-count">17 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:17</span></div>
+          </div>
+        </a>
+        
+        <a href="cmd.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">cmd</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Cmd</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="code.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">code</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">InteractiveInterpreter</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="codecs.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">codecs</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Codec</div>
+            <div class="card-count">10 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:10</span></div>
+          </div>
+        </a>
+        
+        <a href="codeop.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">codeop</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">CommandCompiler</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="collections.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">collections</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ChainMap</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="compileall.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">compileall</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Path</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:3</span></div>
+          </div>
+        </a>
+        
+        <a href="configparser.html" class="card">
+          <div class="card-header" style="background:#e57373;">
+            <span class="card-icon">📐</span>
+            <span class="card-name">configparser</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">MutableMapping</div>
+            <div class="card-count">10 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#e57373;">Abs:1</span><span class="type-chip" style="background:#81c784;">Con:9</span></div>
+          </div>
+        </a>
+        
+        <a href="contextlib.html" class="card">
+          <div class="card-header" style="background:#e57373;">
+            <span class="card-icon">📐</span>
+            <span class="card-name">contextlib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">AbstractContextManager</div>
+            <div class="card-count">10 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#e57373;">Abs:1</span><span class="type-chip" style="background:#ba68c8;">Dec:1</span><span class="type-chip" style="background:#81c784;">Con:8</span></div>
+          </div>
+        </a>
+        
+        <a href="contextvars.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">contextvars</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Context</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="copy.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">copy</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Error</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="csv.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">csv</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Dialect</div>
+            <div class="card-count">4 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:4</span></div>
+          </div>
+        </a>
+        
+        <a href="ctypes.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">ctypes</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">CDLL</div>
+            <div class="card-count">4 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:4</span></div>
+          </div>
+        </a>
+        
+        <a href="dataclasses.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">dataclasses</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Field</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="datetime.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">datetime</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">date</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="decimal.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">decimal</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">DecimalException</div>
+            <div class="card-count">17 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:17</span></div>
+          </div>
+        </a>
+        
+        <a href="difflib.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">difflib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">GenericAlias</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="dis.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">dis</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ArgResolver</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="doctest.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">doctest</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">DocTestCase</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:3</span></div>
+          </div>
+        </a>
+        
+        <a href="encodings.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">encodings</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">CodecRegistryError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="ensurepip.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">ensurepip</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Path</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:3</span></div>
+          </div>
+        </a>
+        
+        <a href="enum.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">enum</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">IntEnum</div>
+            <div class="card-count">17 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:17</span></div>
+          </div>
+        </a>
+        
+        <a href="filecmp.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">filecmp</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">GenericAlias</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="fileinput.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">fileinput</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">GenericAlias</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="fractions.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">fractions</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Decimal</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="ftplib.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">ftplib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Error</div>
+            <div class="card-count">5 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:5</span></div>
+          </div>
+        </a>
+        
+        <a href="functools.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">functools</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">GenericAlias</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="getopt.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">getopt</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">GetoptError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="getpass.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">getpass</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">GetPassWarning</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="gettext.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">gettext</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">NullTranslations</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="graphlib.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">graphlib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">GenericAlias</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="gzip.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">gzip</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">BadGzipFile</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="hashlib.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">hashlib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">blake2b</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="hmac.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">hmac</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">HMAC</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="http.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">http</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">IntEnum</div>
+            <div class="card-count">18 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:18</span></div>
+          </div>
+        </a>
+        
+        <a href="imaplib.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">imaplib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">IMAP4</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:3</span></div>
+          </div>
+        </a>
+        
+        <a href="inspect.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">inspect</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ReferenceType</div>
+            <div class="card-count">4 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:4</span></div>
+          </div>
+        </a>
+        
+        <a href="io.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">io</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">IOBase</div>
+            <div class="card-count">13 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:13</span></div>
+          </div>
+        </a>
+        
+        <a href="ipaddress.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">ipaddress</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">IPv4Address</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="itertools.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">itertools</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">accumulate</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="json.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">json</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">JSONDecodeError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="locale.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">locale</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Error</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="logging.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">logging</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Filterer</div>
+            <div class="card-count">8 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:8</span></div>
+          </div>
+        </a>
+        
+        <a href="lzma.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">lzma</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">LZMACompressor</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="mailbox.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">mailbox</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Error</div>
+            <div class="card-count">5 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:5</span></div>
+          </div>
+        </a>
+        
+        <a href="mimetypes.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">mimetypes</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">MimeTypes</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="mmap.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">mmap</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">OSError</div>
+            <div class="card-count">32 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:32</span></div>
+          </div>
+        </a>
+        
+        <a href="modulefinder.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">modulefinder</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Module</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="multiprocessing.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">multiprocessing</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ProcessError</div>
+            <div class="card-count">4 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:4</span></div>
+          </div>
+        </a>
+        
+        <a href="netrc.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">netrc</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">NetrcParseError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="nt.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">nt</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">OSError</div>
+            <div class="card-count">32 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:32</span></div>
+          </div>
+        </a>
+        
+        <a href="numbers.html" class="card">
+          <div class="card-header" style="background:#e57373;">
+            <span class="card-icon">📐</span>
+            <span class="card-name">numbers</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Rational</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#e57373;">Abs:2</span><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="operator.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">operator</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">attrgetter</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="optparse.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">optparse</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">OptParseError</div>
+            <div class="card-count">6 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:6</span></div>
+          </div>
+        </a>
+        
+        <a href="os.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">os</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">OSError</div>
+            <div class="card-count">32 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:32</span></div>
+          </div>
+        </a>
+        
+        <a href="pathlib.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">pathlib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">PurePath</div>
+            <div class="card-count">8 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:8</span></div>
+          </div>
+        </a>
+        
+        <a href="pdb.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">pdb</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Pdb</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="pickle.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">pickle</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">PickleError</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:3</span></div>
+          </div>
+        </a>
+        
+        <a href="pickletools.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">pickletools</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ArgumentDescriptor</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="pkgutil.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">pkgutil</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">module</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="platform.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">platform</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">AndroidVer</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="plistlib.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">plistlib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">BytesIO</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="poplib.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">poplib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">POP3</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="pprint.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">pprint</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">PrettyPrinter</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="profile.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">profile</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Profile</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="pstats.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">pstats</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">StrEnum</div>
+            <div class="card-count">5 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:5</span></div>
+          </div>
+        </a>
+        
+        <a href="py_compile.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">py_compile</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">PyCompileError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="pyclbr.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">pyclbr</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Class</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="pydoc.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">pydoc</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Doc</div>
+            <div class="card-count">4 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:4</span></div>
+          </div>
+        </a>
+        
+        <a href="pyexpat.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">pyexpat</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ExpatError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="queue.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">queue</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Queue</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:3</span></div>
+          </div>
+        </a>
+        
+        <a href="random.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">random</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Random</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="re.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">re</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Match</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="reprlib.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">reprlib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Repr</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:3</span></div>
+          </div>
+        </a>
+        
+        <a href="rlcompleter.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">rlcompleter</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Completer</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="runpy.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">runpy</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">module</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="sched.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">sched</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Event</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="secrets.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">secrets</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">SystemRandom</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="select.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">select</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">OSError</div>
+            <div class="card-count">32 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:32</span></div>
+          </div>
+        </a>
+        
+        <a href="selectors.html" class="card">
+          <div class="card-header" style="background:#e57373;">
+            <span class="card-icon">📐</span>
+            <span class="card-name">selectors</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Mapping</div>
+            <div class="card-count">14 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#e57373;">Abs:2</span><span class="type-chip" style="background:#81c784;">Con:12</span></div>
+          </div>
+        </a>
+        
+        <a href="shelve.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">shelve</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Shelf</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:3</span></div>
+          </div>
+        </a>
+        
+        <a href="shlex.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">shlex</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">StringIO</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="shutil.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">shutil</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Error</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:2</span></div>
+          </div>
+        </a>
+        
+        <a href="signal.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">signal</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Handlers</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="smtplib.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">smtplib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">SMTPResponseException</div>
+            <div class="card-count">6 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:6</span></div>
+          </div>
+        </a>
+        
+        <a href="socket.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">socket</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">OSError</div>
+            <div class="card-count">42 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:42</span></div>
+          </div>
+        </a>
+        
+        <a href="socketserver.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">socketserver</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">BaseRequestHandler</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:3</span></div>
+          </div>
+        </a>
+        
+        <a href="sqlite3.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">sqlite3</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">DatabaseError</div>
+            <div class="card-count">7 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:7</span></div>
+          </div>
+        </a>
+        
+        <a href="sre_compile.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">sre_compile</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">PatternError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="sre_constants.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">sre_constants</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">PatternError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="sre_parse.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">sre_parse</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">PatternError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="ssl.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">ssl</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">OSError</div>
+            <div class="card-count">42 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:42</span></div>
+          </div>
+        </a>
+        
+        <a href="statistics.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">statistics</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Counter</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="string.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">string</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Formatter</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="struct.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">struct</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Struct</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="subprocess.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">subprocess</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">SubprocessError</div>
+            <div class="card-count">3 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:3</span></div>
+          </div>
+        </a>
+        
+        <a href="symtable.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">symtable</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">StrEnum</div>
+            <div class="card-count">6 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:6</span></div>
+          </div>
+        </a>
+        
+        <a href="tabnanny.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">tabnanny</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">NannyNag</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="tarfile.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">tarfile</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">FilterError</div>
+            <div class="card-count">7 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:7</span></div>
+          </div>
+        </a>
+        
+        <a href="tempfile.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">tempfile</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">SpooledTemporaryFile</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="textwrap.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">textwrap</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">TextWrapper</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="threading.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">threading</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">RuntimeError</div>
+            <div class="card-count">10 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:10</span></div>
+          </div>
+        </a>
+        
+        <a href="time.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">time</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">struct_time</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="timeit.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">timeit</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Timer</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="tkinter.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">tkinter</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Widget</div>
+            <div class="card-count">19 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:19</span></div>
+          </div>
+        </a>
+        
+        <a href="tokenize.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">tokenize</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">TextIOWrapper</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="tomllib.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">tomllib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">TOMLDecodeError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="trace.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">trace</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">CoverageResults</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="traceback.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">traceback</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ANSIColors</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="tracemalloc.html" class="card">
+          <div class="card-header" style="background:#e57373;">
+            <span class="card-icon">📐</span>
+            <span class="card-name">tracemalloc</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Sequence</div>
+            <div class="card-count">8 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#e57373;">Abs:3</span><span class="type-chip" style="background:#81c784;">Con:5</span></div>
+          </div>
+        </a>
+        
+        <a href="turtle.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">turtle</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">RawTurtle</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="types.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">types</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">builtin_function_or_method</div>
+            <div class="card-count">2 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:2</span></div>
+          </div>
+        </a>
+        
+        <a href="typing.html" class="card">
+          <div class="card-header" style="background:#4db6ac;">
+            <span class="card-icon">🔗</span>
+            <span class="card-name">typing</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Protocol</div>
+            <div class="card-count">10 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#4db6ac;">Pro:10</span></div>
+          </div>
+        </a>
+        
+        <a href="unicodedata.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">unicodedata</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">UCD</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="unittest.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">unittest</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">TestCase</div>
+            <div class="card-count">8 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:8</span></div>
+          </div>
+        </a>
+        
+        <a href="uuid.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">uuid</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Enum</div>
+            <div class="card-count">46 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:46</span></div>
+          </div>
+        </a>
+        
+        <a href="venv.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">venv</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">EnvBuilder</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="warnings.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">warnings</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">WarningMessage</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:1</span></div>
+          </div>
+        </a>
+        
+        <a href="wave.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">wave</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">Error</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="weakref.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">weakref</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ReferenceType</div>
+            <div class="card-count">4 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:4</span></div>
+          </div>
+        </a>
+        
+        <a href="webbrowser.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">webbrowser</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">UnixBrowser</div>
+            <div class="card-count">7 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:7</span></div>
+          </div>
+        </a>
+        
+        <a href="winreg.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">winreg</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">OSError</div>
+            <div class="card-count">42 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:42</span></div>
+          </div>
+        </a>
+        
+        <a href="zipapp.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">zipapp</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ZipAppError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="zipfile.html" class="card">
+          <div class="card-header" style="background:#81c784;">
+            <span class="card-icon">⚙️⚙️</span>
+            <span class="card-name">zipfile</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ZipFile</div>
+            <div class="card-count">4 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#81c784;">Con:4</span></div>
+          </div>
+        </a>
+        
+        <a href="zipimport.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">zipimport</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">ZipImportError</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="zlib.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">zlib</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">error</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+        <a href="zoneinfo.html" class="card">
+          <div class="card-header" style="background:#ff8a65;">
+            <span class="card-icon">🚨</span>
+            <span class="card-name">zoneinfo</span>
+          </div>
+          <div class="card-body">
+            <div class="card-root">InvalidTZPathWarning</div>
+            <div class="card-count">1 classes</div>
+            <div class="card-types"><span class="type-chip" style="background:#ff8a65;">Exc:1</span></div>
+          </div>
+        </a>
+        
+</div>
+
+<div class="footer">
+  Generated by Python Hierarchy Generator
+</div>
+
+<script>
+let currentFilter = 'all';
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards();
+}
+function filterCards() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('.card').forEach(c => {
+    const text = c.textContent.toLowerCase();
+    const matchSearch = text.includes(q);
+    const matchFilter = currentFilter === 'all' ||
+                        c.dataset.types?.includes(currentFilter);
+    c.style.display = (matchSearch && matchFilter) ? '' : 'none';
+  });
+}
+</script>
+</body></html>
